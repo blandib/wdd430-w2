@@ -1,7 +1,10 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // NO experimental.serverActions here
 };
 
 export default nextConfig;
+export const config = {
+  matcher: ["/dashboard/:path*"],
+};

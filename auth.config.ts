@@ -1,21 +1,20 @@
-import type { NextAuthConfig } from 'next-auth';
- 
+import type { NextAuthConfig } from "next-auth";
+
 export const authConfig = {
   pages: {
-    signIn: '/login',
+    signIn: "/login",
+  },
+  session: {
+    strategy: "jwt", // must be JWT for middleware
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
-      }
+      const isDashboard = nextUrl.pathname.startsWith("/dashboard");
+
+      if (isDashboard && !isLoggedIn) return false; // redirect to login
       return true;
     },
   },
-  providers: [], // Add providers with an empty array for now
+  providers: [], // Credentials are added in auth.ts
 } satisfies NextAuthConfig;

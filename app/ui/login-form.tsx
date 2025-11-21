@@ -1,4 +1,5 @@
-'use client';
+'use client'
+
 import { lusitana } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
@@ -10,14 +11,21 @@ import { Button } from './button';
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
- 
+
+
+export const metadata = {
+  title: 'Login | Acme Dashboard',
+};
+
+
 export default function LoginForm() {
-   const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined,
   );
+
   return (
     <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -69,10 +77,11 @@ export default function LoginForm() {
         <Button className="mt-4 w-full" aria-disabled={isPending}>
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>
-        <div className="flex h-8 items-end space-x-1">
-         aria-live="polite"
+        <div
+          className="flex h-8 items-end space-x-1"
+          aria-live="polite"
           aria-atomic="true"
-        
+        >
           {errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />

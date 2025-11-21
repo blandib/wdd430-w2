@@ -1,40 +1,31 @@
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
-import { z } from 'zod';
-import type { User } from '@/app/lib/definitions';
-import bcrypt from 'bcrypt';
-import postgres from 'postgres';
- 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
- 
-async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
-    return user[0];
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
-  }
-}
- 
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "./auth.config";
+
+const HARD_CODED_USER = {
+  id: "1",
+  name: "User",
+  email: "user@nextmail.com",
+  password: "123456", // plaintext for testing (okay for tutorial)
+};
+
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
+      name: "Credentials",
       async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
- 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
-          if (!user) return null;
-           const passwordsMatch = await bcrypt.compare(password, user.password);
-           if (passwordsMatch) return user;
+        if (
+          credentials?.email === HARD_CODED_USER.email &&
+          credentials?.password === HARD_CODED_USER.password
+        ) {
+          // Return user object without password
+          return {
+            id: HARD_CODED_USER.id,
+            name: HARD_CODED_USER.name,
+            email: HARD_CODED_USER.email,
+          };
         }
-        console.log('Invalid credentials');
         return null;
       },
     }),

@@ -1,89 +1,38 @@
-/*import { Form } from '@/app/ui/invoices/edit-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
-import { notFound } from 'next/navigation';
-
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
-  const id = params.id;
-  
-  // Add validation to prevent "uuid" string
-  if (id === 'uuid') {
-    notFound();
-  }
-  
-  try {
-    const [invoice, customers] = await Promise.all([
-      fetchInvoiceById(id),
-      fetchCustomers(),
-    ]);
-
-    if (!invoice) {
-      notFound();
-    }
-
-    return (
-      <main>
-        <Breadcrumbs
-          breadcrumbs={[
-            { label: 'Invoices', href: '/dashboard/invoices' },
-            {
-              label: 'Edit Invoice',
-              href: `/dashboard/invoices/${id}/edit`,
-              active: true,
-              
-
-            },
-          ]}
-        />
-        <Form invoice={invoice} customers={customers} />
-      </main>
-    );
-  } catch (error) {
-    console.error('Error:', error);
-    notFound();
-  }
-}*/
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
+ 
+export const metadata = {
+  title: 'Edit Invoice | Acme Dashboard',
+};
+
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  
-  if (id === 'uuid') {
-    notFound();
-  }
-  
-  try {
-    const [invoice, customers] = await Promise.all([
-      fetchInvoiceById(id),
-      fetchCustomers(),
-    ]);
-
+  const [invoice, customers] = await Promise.all([
+    fetchInvoiceById(id),
+    fetchCustomers(),
+  ]);
+    
     if (!invoice) {
-      notFound();
+        notFound();
     }
-
-    return (
-      <main>
-        <Breadcrumbs
-          breadcrumbs={[
-            { label: 'Invoices', href: '/dashboard/invoices' },
-            {
-              label: 'Edit Invoice',
-              href: `/dashboard/invoices/${id}/edit`,
-              active: true,
-            },
-          ]}
-        />
-        <Form invoice={invoice} customers={customers} />
-      </main>
-    );
-  } catch (error) {
-    console.error('Error:', error);
-    notFound();
-  }
+    
+  return (
+    <main>
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: 'Invoices', href: '/dashboard/invoices' },
+          {
+            label: 'Edit Invoice',
+            href: `/dashboard/invoices/${id}/edit`,
+            active: true,
+          },
+        ]}
+      />
+      <Form invoice={invoice} customers={customers} />
+    </main>
+  );
 }
